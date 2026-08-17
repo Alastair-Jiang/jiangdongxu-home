@@ -41,3 +41,51 @@ async function fetchRepo(meta: ProjectMeta): Promise<Project> {
 export async function getAllProjects(): Promise<Project[]> {
   return Promise.all(projects.map(fetchRepo));
 }
+
+/** 拉取仓库 README 的 Markdown 原文（Accept: raw 直接返回文本） */
+export async function getRepoReadme(
+  owner: string,
+  repo: string,
+): Promise<string | null> {
+  const url = `https://api.github.com/repos/${owner}/${repo}/readme`;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        ...(GITHUB_TOKEN ? { Authorization: `Bearer ${GITHUB_TOKEN}` } : {}),
+        Accept: "application/vnd.github.raw+json",
+      },
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
+    return await res.text();
+  } catch {
+    return null;
+  }
+}
+
+export interface CommitData {
+  sha: string;
+  commit: {
+    message: string;
+    author: { name: string; date: string } | null;
+  };
+  html_url: string;
+}
+
+/** 拉取仓库最近的提交记录（最多 20 条） */
+export async function getRepoCommits(
+  owner: string,
+  repo: string,
+): Promise<CommitData[]> {
+  const url = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=20`;
+  try {
+    const res = await fetch(url, {
+      headers: GITHUB_TOKEN ? { Authorization: `Bearer ${GITHUB_TOKEN}` } : {},
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    return (await res.json()) as CommitData[];
+  } catch {
+    return [];
+  }
+}

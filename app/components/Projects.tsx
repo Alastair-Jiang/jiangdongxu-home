@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { categoryOrder } from "@/lib/projects";
 import type { Project } from "@/lib/github";
 import SectionTitle from "./SectionTitle";
@@ -12,31 +13,47 @@ function formatDate(iso: string) {
 function ProjectCard({ project }: { project: Project }) {
   const d = project.data;
   const desc = project.description || d?.description || "暂无描述";
-  const href = d?.html_url ?? `https://github.com/${project.owner}/${project.repo}`;
+  const github = d?.html_url ?? `https://github.com/${project.owner}/${project.repo}`;
 
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="hairline group flex flex-col justify-between gap-6 rounded-lg bg-panel p-6 transition-colors hover:border-accent"
-    >
+    <div className="hairline group flex flex-col justify-between gap-6 rounded-lg bg-panel p-6 transition-colors hover:border-accent">
       <div>
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold text-fg transition-colors group-hover:text-accent">
+        <div className="flex items-start justify-between">
+          <Link
+            href={`/projects/${project.repo}`}
+            className="text-xl font-semibold text-fg transition-colors hover:text-accent"
+          >
             {project.name}
-          </h3>
+          </Link>
           {d && (
             <span className="font-mono text-xs text-muted">★ {d.stargazers_count}</span>
           )}
         </div>
         <p className="mt-3 text-sm leading-relaxed text-muted">{desc}</p>
       </div>
-      <div className="flex items-center gap-3 font-mono text-xs text-muted">
-        {d?.language && <span className="text-accent">{d.language}</span>}
-        {d && <span>更新于 {formatDate(d.pushed_at)}</span>}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3 font-mono text-xs text-muted">
+          {d?.language && <span className="text-accent">{d.language}</span>}
+          {d && <span>更新于 {formatDate(d.pushed_at)}</span>}
+        </div>
+        <div className="flex items-center gap-3 font-mono text-xs">
+          <Link
+            href={`/projects/${project.repo}`}
+            className="text-blue hover:text-accent"
+          >
+            详情 →
+          </Link>
+          <a
+            href={github}
+            target="_blank"
+            rel="noreferrer"
+            className="text-muted hover:text-accent"
+          >
+            GitHub ↗
+          </a>
+        </div>
       </div>
-    </a>
+    </div>
   );
 }
 

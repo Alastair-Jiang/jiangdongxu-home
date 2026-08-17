@@ -59,3 +59,8 @@ export const projects: ProjectMeta[] = [
 
 /** 分类的展示顺序 */
 export const categoryOrder: Category[] = ["量化", "AI 系统"];
+
+/** 根据仓库名查找清单条目（用于详情页） */
+export function getProjectByRepo(repo: string): ProjectMeta | undefined {
+  return projects.find((p) => p.repo === repo);
+}
