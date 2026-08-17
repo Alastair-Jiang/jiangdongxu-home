@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProjectByRepo } from "@/lib/projects";
+import { getProjectByRepo, projects } from "@/lib/projects";
 import { getRepoReadme, getRepoCommits } from "@/lib/github";
 import Markdown from "@/app/components/Markdown";
 import Navbar from "@/app/components/Navbar";
@@ -8,6 +8,10 @@ import Footer from "@/app/components/Footer";
 import ReadingProgress from "@/app/components/ReadingProgress";
 import BackToTop from "@/app/components/BackToTop";
 import Toc from "@/app/components/Toc";
+
+export function generateStaticParams() {
+  return projects.map((p) => ({ repo: p.repo }));
+}
 
 export async function generateMetadata({
   params,

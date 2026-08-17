@@ -1,12 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPostBySlug } from "@/lib/posts";
+import { getAllPosts, getPostBySlug } from "@/lib/posts";
 import Markdown from "@/app/components/Markdown";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import ReadingProgress from "@/app/components/ReadingProgress";
 import BackToTop from "@/app/components/BackToTop";
 import Toc from "@/app/components/Toc";
+
+export function generateStaticParams() {
+  return getAllPosts().map((p) => ({ slug: p.slug }));
+}
 
 export async function generateMetadata({
   params,

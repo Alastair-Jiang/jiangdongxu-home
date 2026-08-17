@@ -1,0 +1,10 @@
+services:
+  home:
+    build: .
+    container_name: jiangdongxu-home
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      # GITHUB_TOKEN: ghp_xxx   # 可选：提升 GitHub API 速率上限（无 token 60 次/时）
