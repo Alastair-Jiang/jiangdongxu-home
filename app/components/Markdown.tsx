@@ -2,16 +2,44 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
 
+/** 从 hast 节点提取纯文本（用于生成标题 id） */
+function nodeText(node: unknown): string {
+  const n = node as { value?: string; children?: unknown[] } | undefined;
+  if (!n) return "";
+  if (typeof n.value === "string") return n.value;
+  if (Array.isArray(n.children)) return n.children.map(nodeText).join("");
+  return "";
+}
+
+/** 生成 URL 安全的标题 id（保留中英文，标点转 -） */
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\p{L}\p{N}-]+/gu, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 /** 站内 Markdown 渲染：README / 博客文章共用，走浅色 Jane Street 风格 */
 const components: Components = {
   h1: (props) => (
     <h1 className="mt-10 mb-4 border-b border-line pb-2 text-2xl font-semibold" {...props} />
   ),
-  h2: (props) => (
-    <h2 className="mt-8 mb-3 text-xl font-semibold" {...props} />
+  h2: ({ node, children, ...props }) => (
+    <h2 id={slugify(nodeText(node))} className="mt-8 mb-3 text-xl font-semibold" {...props}>
+      {children}
+    </h2>
   ),
-  h3: (props) => (
-    <h3 className="mt-6 mb-2 text-lg font-semibold" {...props} />
+  h3: ({ node, children, ...props }) => (
+    <h3 id={slugify(nodeText(node))} className="mt-6 mb-2 text-lg font-semibold" {...props}>
+      {children}
+    </h3>
+  ),
+  h4: ({ node, children, ...props }) => (
+    <h4 id={slugify(nodeText(node))} className="mt-5 mb-2 text-base font-semibold" {...props}>
+      {children}
+    </h4>
   ),
   p: (props) => <p className="my-4 leading-relaxed" {...props} />,
   a: (props) => (

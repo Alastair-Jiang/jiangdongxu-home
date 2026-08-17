@@ -5,6 +5,9 @@ import { getRepoReadme, getRepoCommits } from "@/lib/github";
 import Markdown from "@/app/components/Markdown";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
+import ReadingProgress from "@/app/components/ReadingProgress";
+import BackToTop from "@/app/components/BackToTop";
+import ProjectToc from "@/app/components/ProjectToc";
 
 export async function generateMetadata({
   params,
@@ -26,6 +29,17 @@ function formatDate(iso: string): string {
   });
 }
 
+function BackLink() {
+  return (
+    <Link
+      href="/#projects"
+      className="inline-flex items-center gap-2 font-mono text-sm text-muted transition-colors hover:text-accent"
+    >
+      <span aria-hidden>←</span> 返回项目列表
+    </Link>
+  );
+}
+
 export default async function ProjectPage({
   params,
 }: {
@@ -40,16 +54,17 @@ export default async function ProjectPage({
     getRepoCommits(meta.owner, meta.repo),
   ]);
 
+  const github = `https://github.com/${meta.owner}/${meta.repo}`;
+
   return (
     <>
+      <ReadingProgress />
+      <BackToTop />
       <Navbar />
-      <main className="mx-auto max-w-3xl px-6 py-12">
-        <Link
-          href="/#projects"
-          className="font-mono text-sm text-muted hover:text-accent"
-        >
-          ← 返回项目列表
-        </Link>
+      <main className="relative mx-auto max-w-3xl px-6 py-12">
+        <ProjectToc />
+
+        <BackLink />
 
         <header className="mt-8">
           <h1 className="text-4xl font-bold">{meta.name}</h1>
@@ -57,7 +72,7 @@ export default async function ProjectPage({
           <div className="mt-4 flex flex-wrap items-center gap-4 font-mono text-sm">
             <span className="text-accent">{meta.category}</span>
             <a
-              href={`https://github.com/${meta.owner}/${meta.repo}`}
+              href={github}
               className="text-blue underline underline-offset-4 hover:text-accent"
               target="_blank"
               rel="noreferrer"
@@ -69,7 +84,7 @@ export default async function ProjectPage({
 
         <section className="mt-12">
           <h2 className="font-mono text-sm text-muted">README</h2>
-          <div className="mt-2">
+          <div className="project-readme mt-2">
             {readme ? (
               <Markdown>{readme}</Markdown>
             ) : (
@@ -105,6 +120,10 @@ export default async function ProjectPage({
             <p className="mt-4 text-muted">拉取提交记录失败。</p>
           )}
         </section>
+
+        <div className="mt-16">
+          <BackLink />
+        </div>
       </main>
       <Footer />
     </>
