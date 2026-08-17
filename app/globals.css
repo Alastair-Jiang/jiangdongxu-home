@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+/*
+ * Jane Street 官网配色（浅色主题）
+ * 白底 + 黑字 + 橙 #ff8000 强调 + 深蓝 #0b419e 次级，浅灰分割线。
+ */
+@theme {
+  /* 颜色（值取自 janestreet.com 官方 CSS token） */
+  --color-bg: #ffffff;           /* 白底 (--white) */
+  --color-panel: #f5f5f6;        /* neutral-100 浅灰面板 */
+  --color-panel-2: #fafafb;      /* neutral-50 更浅面板 */
+  --color-accent: #ff8000;       /* orange-500 强调（链接/按钮） */
+  --color-accent-dim: #df7000;   /* orange-600 hover */
+  --color-blue: #0b419e;         /* blue-500 次级深蓝 */
+  --color-fg: #131415;           /* neutral-900 主文字 */
+  --color-muted: #71767f;        /* neutral-600 次要文字 */
+  --color-line: #e6e7e9;         /* neutral-200 分割线 */
+
+  /* 字体：全站无衬线（Jane Street 用 Alright Sans LT，中文回退黑体） */
+  --font-sans: "Alright Sans LT", Helvetica, Arial, -apple-system, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Consolas,
+    "Liberation Mono", monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+/* 细分割线：Jane Street 用 hairline 而非重阴影做层次 */
+.hairline {
+  border: 1px solid var(--color-line);
+}
+
+/* 唯一保留的动画：极克制的入场过渡，逐段上浮 */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
