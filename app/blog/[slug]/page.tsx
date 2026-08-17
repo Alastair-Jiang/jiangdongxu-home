@@ -4,6 +4,9 @@ import { getPostBySlug } from "@/lib/posts";
 import Markdown from "@/app/components/Markdown";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
+import ReadingProgress from "@/app/components/ReadingProgress";
+import BackToTop from "@/app/components/BackToTop";
+import Toc from "@/app/components/Toc";
 
 export async function generateMetadata({
   params,
@@ -25,6 +28,17 @@ function formatDate(iso: string) {
   });
 }
 
+function BackLink() {
+  return (
+    <Link
+      href="/blog"
+      className="inline-flex items-center gap-2 font-mono text-sm text-muted transition-colors hover:text-accent"
+    >
+      <span aria-hidden>←</span> 返回博客
+    </Link>
+  );
+}
+
 export default async function PostPage({
   params,
 }: {
@@ -36,11 +50,13 @@ export default async function PostPage({
 
   return (
     <>
+      <ReadingProgress />
+      <BackToTop />
       <Navbar />
-      <main className="mx-auto max-w-3xl px-6 py-12">
-        <Link href="/blog" className="font-mono text-sm text-muted hover:text-accent">
-          ← 返回博客
-        </Link>
+      <main className="relative mx-auto max-w-3xl px-6 py-12">
+        <Toc selector=".blog-content" />
+
+        <BackLink />
 
         <header className="mt-8">
           <h1 className="text-4xl font-bold">{post.title}</h1>
@@ -58,9 +74,13 @@ export default async function PostPage({
           </div>
         </header>
 
-        <article className="mt-10">
+        <article className="blog-content mt-10">
           <Markdown>{post.content}</Markdown>
         </article>
+
+        <div className="mt-16">
+          <BackLink />
+        </div>
       </main>
       <Footer />
     </>

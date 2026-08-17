@@ -7,7 +7,7 @@ import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import ReadingProgress from "@/app/components/ReadingProgress";
 import BackToTop from "@/app/components/BackToTop";
-import ProjectToc from "@/app/components/ProjectToc";
+import Toc from "@/app/components/Toc";
 
 export async function generateMetadata({
   params,
@@ -62,7 +62,7 @@ export default async function ProjectPage({
       <BackToTop />
       <Navbar />
       <main className="relative mx-auto max-w-3xl px-6 py-12">
-        <ProjectToc />
+        <Toc />
 
         <BackLink />
 

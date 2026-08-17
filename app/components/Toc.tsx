@@ -9,15 +9,20 @@ interface TocItem {
 }
 
 /**
- * README 侧边目录：从渲染后的 .project-readme 里提取 h2–h4，
- * 做滚动高亮（scroll spy）与平滑锚点跳转。桌面端（xl）固定左侧显示。
+ * 侧边目录：从正文容器里提取 h2–h4，做滚动高亮（scroll spy）与平滑锚点跳转。
+ * selector 指向正文容器（项目页 `.project-readme` / 博客页 `.blog-content`）。
+ * 桌面端（xl）固定左侧显示。
  */
-export default function ProjectToc() {
+export default function Toc({
+  selector = ".project-readme",
+}: {
+  selector?: string;
+}) {
   const [items, setItems] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState("");
 
   useEffect(() => {
-    const container = document.querySelector(".project-readme");
+    const container = document.querySelector(selector);
     if (!container) return;
     const headings = Array.from(
       container.querySelectorAll("h2, h3, h4"),
@@ -37,7 +42,7 @@ export default function ProjectToc() {
       toc.push({ id: unique, text, level: Number(h.tagName[1]) });
     }
     setItems(toc);
-  }, []);
+  }, [selector]);
 
   useEffect(() => {
     if (items.length === 0) return;
